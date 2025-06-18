@@ -1,37 +1,25 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const medicineRoutes=require("./routes/medicineRoutes.js")
+const medicineRoutes = require("./routes/medicineRoutes.js");
+
 const app = express();
 
-// Middleware to parse JSON
+// Middleware
 app.use(express.json());
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({ extended: false }));
 
+// Routes
+app.use("/api/products", medicineRoutes);
 
-
-//router
-app.use("/api/products",medicineRoutes)
-
-
-
-//API updated
-
-app.get("/", (req, res) => {
-  res.send("Welcome to the Medicial API");
-});
-
-
-
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-
   .then(() => {
-    console.log("Connected to database!");
-    app.listen(process.env.PORT, () => {
-      console.log(`Server is running on  http://localhost:${process.env.PORT}`)
-    });
+    console.log("✅ Connected to database!");
   })
- .catch((error) => {
-  console.error("Connection failed:", error.message);
-});
+  .catch((error) => {
+    console.error("❌ Connection failed:", error.message);
+  });
 
+// ✅ Export app for Vercel
+module.exports = app;
